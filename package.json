@@ -2,7 +2,7 @@
   "name": "nova-blog",
   "version": "0.0.1",
   "description": "A static site blog platform which is both quick to spin up and contribute to.",
-  "main": "index.js",
+  "main": "index.mjs",
   "scripts": {
     "test": "test",
     "generate": "node generate.mjs"
