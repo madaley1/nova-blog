@@ -14,6 +14,6 @@ My ideal process is as follows:
 1. Write MD file
 2. Add to ./posts directory & push
 3. Run generation script (ideally gh actions does this)
-4. Post Link is added to post list
-5. When Post Link is visited, the JS converts the MD to HTML
-6. JS returns MD as HTML and inserts it into the body, for the reader to enjoy!
+4. Post Link is added to post list & home
+5. HTML is generated for page
+6. User can visit post and enjoy the blog!
