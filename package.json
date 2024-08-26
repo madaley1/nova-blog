@@ -1,0 +1,25 @@
+{
+  "name": "nova-blog",
+  "version": "0.0.1",
+  "description": "A static site blog platform which is both quick to spin up and contribute to.",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/madaley1/nova-blog"
+  },
+  "keywords": [
+    "blog"
+  ],
+  "author": "madaley1",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/madaley1/nova-blog/issues"
+  },
+  "homepage": "https://github.com/madaley1/nova-blog#readme",
+  "dependencies": {
+    "markdown-to-html": "^0.0.13"
+  }
+}
