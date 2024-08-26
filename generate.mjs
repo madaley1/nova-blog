@@ -166,10 +166,10 @@ const generateHomePage = (postPaths) => {
   const currentFile = readFileSync(homeFilePath, { encoding: 'utf8', flag: 'r' });
   console.log(typeof currentFile)
   
-  const fileParts = currentFile.split(`<section id="posts">`)
+  const fileParts = currentFile.split(`<section id="posts"><h2>Recent Posts</h2>`)
   const startOfFile = fileParts[0]
   const secondPartOfFile = fileParts[1].split("</section>")[1]
-  const fileContents = startOfFile + linkList + secondPartOfFile;
+  const fileContents = startOfFile + `<section id="posts"><h2>Recent Posts</h2>` + linkList +  `</section>` + secondPartOfFile;
   const fd = openSync(homeFilePath, 'w+')
   if(currentFile === fileContents) {
     close(fd);
