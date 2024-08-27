@@ -125,7 +125,7 @@ const generatePostFiles = (postPaths) => {
 }
 
 const generateHomePage = (postPaths) => {
-  let linkList = '<section id="posts"><h2>Recent Posts</h2>';
+  let linkList = '<section id="posts">';
 
   // generating post list
   for(let i = postPaths.length; i - 1 > -1 && i > postPaths.length - 5; i--){
@@ -149,7 +149,7 @@ const generateHomePage = (postPaths) => {
   const currentFile = readFileSync(homeFilePath, { encoding: 'utf8', flag: 'r' });
   
   // file construction
-  const fileParts = currentFile.split(`<section id="posts"><h2>Recent Posts</h2>`);
+  const fileParts = currentFile.split(`<section id="posts">`);
   const startOfFile = fileParts[0];
   const secondPartOfFile = fileParts[1].split("</section>")[1];
   const fileContents = startOfFile + linkList  + secondPartOfFile;
