@@ -25,7 +25,7 @@ jobs:
         GH_TOKEN: ${{secrets.GITHUB_TOKEN}}
     - run: npm i
     - run: git config --global user.name "beep boop"
-    - run: git config --global user.email "mor2daley@gmail.com"
+    - run: git config --global user.email "beepboop@gmail.com"
     - run: npm run generate
     - run: git add -A
     - run: git commit -m "auto-generated files"
