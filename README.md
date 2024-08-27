@@ -8,7 +8,7 @@ I wanted a simple self-hosted blog platform to be hosted on github pages and tha
 
 ## Deploying to github pages
 
-Luckily deployment is incredibly simple, just clone this repo, push it to a github pages repo, and you should be good to go!
+Luckily deployment is incredibly simple, just clone this repo and push it to a github pages repo, and you should be good to go!
 There is a `docker-compose.yml` file in this repo if you wanted to play around with it localloy as well!
 
 ## Posting to your blog
