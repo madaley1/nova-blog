@@ -15,8 +15,8 @@ There is a `docker-compose.yml` file in this repo if you wanted to play around w
 
 The general workflow is as follows:
 1. Write MD file
-2. Add to `posts/{date}` directory & push (i.e. `posts/2024-01-01/blogPost.md` )
-3. Run generation script (currently configured with GH actions, however can be done manually with `npm run generate`)
+2. Add to `posts/{date}` directory & push ( i.e. `posts/2024-01-01/blogPost.md` )
+3. Run generation script ( currently configured with GH actions, however can be done manually with `npm run generate` )
 4. User can visit the new post and enjoy the blog!
 
 ## Common Issues
