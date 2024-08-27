@@ -29,3 +29,6 @@ You have to allow actions to make edits to your repo. This can be done in your r
 
 ### Are there plans to integrate more common blog features like search or tagging?
 No, honestly there aren't plans to take this project any further. This is built to be very opinionated in its simplicity, essentially stripping  blogging down to its bare roots, which is your thoughts displayed on a site, with minor stylings. It's not built to be a super professional platform, but something someone who's never touched HTML/CSS/JS before can quickly spin up, host, and blast their thoughts into the universe. 
+
+## Contributing
+While there aren't plans to continue development much further on this platform, feel free to add issues or PRs if you think there's something that would add value! Keep in mind though, at this time this is not meant to be the most valuable, feature-rich blogging platform, quite the opposite, it is meant to be something closer to [neofetch](https://github.com/dylanaraps/neofetch), it does its job simply without too much flair or too many options. If your idea is rejected, it does not mean it was bad, it likely was very good, but not right for the philosophy of this project. Feel free to Fork it and make updates how you see fit though, I'd love to see how other people think this should be!
