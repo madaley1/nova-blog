@@ -69,7 +69,7 @@ const generatePostsPage = (postPaths) => {
     // file construction
     const fileContents = startOfFile + bodyOfFile  + secondPartOfFile;
 
-    //
+    // regenerate
     if(currentFile !== fileContents) {;
       const fd = openSync(postsFilePath, 'w+');
       writeFileSync(fd, fileContents);
@@ -113,11 +113,13 @@ const generatePostFiles = (postPaths) => {
     const fileContents = beginningOfFile + bodyOfFile + endOfFile;
 
     // regeneration
-    const currentFile = readFileSync(fd, { encoding: 'utf8', flag: 'r' });
+    const htmlFile = postPath + ".html";
+    
+    const currentFile = readFileSync(htmlFile, { encoding: 'utf8', flag: 'r' });
     if(currentFile !== fileContents) {
       const fd = openSync(postPath+".html", 'w+');
       writeFileSync(fd, fileContents);
-      close(fd);    
+      close(fd);
     }
   }
 }
