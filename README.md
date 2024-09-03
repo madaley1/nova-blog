@@ -27,6 +27,11 @@ You have to allow actions to make edits to your repo. This can be done in your r
 
 ## FAQ
 
+### How do I add images to my posts?
+I built a solution to this via a regex match and replace, if the markdown you are writing is not working with images, it is likely because of a difference between the version I built this with and the version you're using. I built this using Obsidian.md's markdown processor in mind, which formats images as such: `![[img.png]]`. If yours is different you have two options:
+1. Swap to Obsidians formatting before submitting to Nova-Blog
+2. Update the regex in the generate.mjs file, which is found on lines 28 and 35 (as of writing). I do want to make it DRYer, but as this is a hobby project it may not happen super soon. Feel free to create a PR if you want it sooner though!
+
 ### Are there plans to integrate more common blog features like search or tagging?
 No, honestly there aren't plans to take this project any further. This is built to be very opinionated in its simplicity, essentially stripping  blogging down to its bare roots, which is your thoughts displayed on a site, with minor stylings. It's not built to be a super professional platform, but something someone who's never touched HTML/CSS/JS before can quickly spin up, host, and blast their thoughts into the universe. 
 
