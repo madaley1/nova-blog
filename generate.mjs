@@ -24,7 +24,19 @@ const getFiles = (source) =>
 const translateMdToHTML = (source) => {
   if(!existsSync(source)) throw new Error('file does not exist');
   const data = readFileSync(source, "utf8");
-  return converter.makeHtml(data);
+  let html = converter.makeHtml(data);
+  const images = data.match(/(!\[\[.*\]\])/g);
+  console.log(images)
+  if(!images) return html
+  images.forEach((value, index)=>{
+    console.log(value)
+    const uri = value.substring(3, value.length - 2);
+    const imgTag = `<img src="${uri}"/>`;
+    html = html.replace(/(!\[\[.*\]\])/, imgTag);
+    console.log(imgTag)
+  })
+  
+  return html
 }
 
 const capitalizeFirstLetter = (string) => {

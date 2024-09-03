@@ -2,4 +2,8 @@ h1 {
   text-transform: capitalize;
 }
 
+img {
+  max-width: 90%;
+}
+
 /*# sourceMappingURL=posts.css.map */

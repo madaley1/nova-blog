@@ -26,5 +26,30 @@ body #posts {
 body #posts .postLink {
   margin-bottom: 1em;
 }
+body small {
+  font-size: xx-small;
+}
+body blockquote p {
+  display: inline;
+}
+body blockquote::before {
+  content: ">";
+  display: inline-block;
+  position: relative;
+  height: 1em;
+  width: 20pt;
+  margin-left: -1em;
+  font-size: 1.5em;
+  vertical-align: bottom;
+}
+body .kofi {
+  position: fixed;
+  bottom: 10px;
+  display: flex;
+  flex-flow: column;
+}
+body .kofi img {
+  width: 150px;
+}
 
 /*# sourceMappingURL=global.css.map */
