@@ -17,11 +17,15 @@ const getDirectories = (source) =>
 
 const getFiles = (source) =>
   readdirSync(source, { withFileTypes: true })
-    .filter((dirent) => statSync(dirent.path + "/" + dirent.name).isFile() && dirent.name.split('.')[1] !== "html")
+    .filter((dirent) => {
+      const fileType = dirent.name.split('.')[1]
+
+      return statSync(dirent.path + "/" + dirent.name).isFile() && dirent.name.split('.')[1] === "md"})
     .map(dirent => dirent.path + "/" + dirent.name.split('.').slice(0, -1).join(""));
 
 
 const translateMdToHTML = (source) => {
+  console.log(source)
   if(!existsSync(source)) throw new Error('file does not exist');
   const data = readFileSync(source, "utf8");
   let html = converter.makeHtml(data);
