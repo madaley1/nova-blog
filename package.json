@@ -24,6 +24,7 @@
     "node": ">=20.1"
   },
   "dependencies": {
+    "gray-matter": "^4.0.3",
     "sass": "^1.77.8",
     "showdown": "^2.1.0"
   }

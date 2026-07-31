@@ -10,8 +10,18 @@ import {
 import { dirname, extname, join, basename } from 'path';
 import { fileURLToPath } from 'url';
 import showdown from 'showdown';
+import matter from 'gray-matter';
 
-import { esc, postLink, postList, renderTemplate } from './src/templates.mjs';
+import {
+  esc,
+  joinUrl,
+  postList,
+  renderAtomFeed,
+  renderOgMeta,
+  renderSitemap,
+  renderTemplate,
+} from './src/templates.mjs';
+import { site } from './src/site.config.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -36,22 +46,15 @@ const writeFile = (relPath, contents) => {
   writeFileSync(target, contents);
 };
 
-const renderBase = ({ title, description = '', extraHead = '', content }) =>
-  renderTemplate(baseLayout, {
-    title: esc(title),
-    description: esc(description),
-    extraHead,
-    content,
-  });
-
-// Obsidian-style image wikilinks: ![[path/img.png]] -> <img src="path/img.png"/>
+// Obsidian-style image wikilinks: ![[path/img.png]] -> ![](path/img.png).
 // Applied to the markdown *before* conversion so we don't regex over HTML.
 const rewriteWikilinkImages = (md) =>
   md.replace(/!\[\[([^\]]+)\]\]/g, (_m, uri) => `![](${uri.trim()})`);
 
-const markdownToHtml = (mdPath) => {
-  const raw = readFileSync(mdPath, 'utf8');
-  return converter.makeHtml(rewriteWikilinkImages(raw));
+const normalizeDate = (value, fallback) => {
+  if (!value) return fallback;
+  if (value instanceof Date) return value.toISOString().slice(0, 10);
+  return String(value).slice(0, 10);
 };
 
 const collectPosts = () => {
@@ -63,33 +66,77 @@ const collectPosts = () => {
     for (const fileEntry of readdirSync(dateDir, { withFileTypes: true })) {
       if (!fileEntry.isFile() || extname(fileEntry.name) !== '.md') continue;
       const slug = basename(fileEntry.name, '.md');
+      const mdPath = join(dateDir, fileEntry.name);
+      const parsed = matter(readFileSync(mdPath, 'utf8'));
+      const fm = parsed.data || {};
+
+      if (fm.draft === true) continue;
+
+      const date = normalizeDate(fm.date, dateEntry.name);
+      const url = `/posts/${dateEntry.name}/${slug}.html`;
+
       posts.push({
         slug,
-        date: dateEntry.name,
-        title: capitalizeFirstLetter(slug),
-        mdPath: join(dateDir, fileEntry.name),
-        url: `/posts/${dateEntry.name}/${slug}.html`,
+        date,
+        folderDate: dateEntry.name,
+        title: fm.title || capitalizeFirstLetter(slug),
+        description: fm.description || '',
+        tags: Array.isArray(fm.tags) ? fm.tags : [],
+        updated: fm.updated ? normalizeDate(fm.updated) : undefined,
+        body: parsed.content,
+        url,
+        absoluteUrl: joinUrl(site.url, url),
       });
     }
   }
-  // Newest first, breaking ties by slug for determinism.
   posts.sort((a, b) => (b.date === a.date ? a.slug.localeCompare(b.slug) : b.date.localeCompare(a.date)));
   return posts;
+};
+
+const markdownToHtml = (md) => converter.makeHtml(rewriteWikilinkImages(md));
+
+const renderBase = ({
+  title,
+  description = site.description,
+  canonicalPath,
+  ogType = 'website',
+  extraHead = '',
+  content,
+}) => {
+  const canonicalUrl = joinUrl(site.url, canonicalPath || '/');
+  const ogMeta = renderOgMeta({
+    title,
+    description,
+    canonicalUrl,
+    type: ogType,
+    siteTitle: site.title,
+  });
+  return renderTemplate(baseLayout, {
+    title: esc(title),
+    description: esc(description),
+    canonicalUrl: esc(canonicalUrl),
+    siteTitle: esc(site.title),
+    ogMeta,
+    extraHead,
+    content,
+  });
 };
 
 const generatePostPages = (posts) => {
   for (const post of posts) {
     const content = renderTemplate(postLayout, {
       title: esc(post.title),
-      content: markdownToHtml(post.mdPath),
+      content: markdownToHtml(post.body),
     });
     const html = renderBase({
-      title: `${post.title} | Nova Blog`,
-      description: `${post.title} — posted ${post.date}`,
+      title: `${post.title} | ${site.title}`,
+      description: post.description || `${post.title} — posted ${post.date}`,
+      canonicalPath: post.url,
+      ogType: 'article',
       extraHead: '<link rel="stylesheet" href="/styles/posts.css"/>',
       content,
     });
-    writeFile(`posts/${post.date}/${post.slug}.html`, html);
+    writeFile(`posts/${post.folderDate}/${post.slug}.html`, html);
   }
 };
 
@@ -99,7 +146,12 @@ const generatePostsIndex = (posts) => {
   });
   writeFile(
     'posts/index.html',
-    renderBase({ title: 'Posts | Nova Blog', content })
+    renderBase({
+      title: `Posts | ${site.title}`,
+      description: `All posts on ${site.title}.`,
+      canonicalPath: '/posts/',
+      content,
+    })
   );
 };
 
@@ -109,7 +161,12 @@ const generateHomePage = (posts) => {
   });
   writeFile(
     'index.html',
-    renderBase({ title: 'Nova Blog', content })
+    renderBase({
+      title: site.title,
+      description: site.description,
+      canonicalPath: '/',
+      content,
+    })
   );
 };
 
@@ -117,8 +174,40 @@ const generateAboutPage = () => {
   const content = readPage('about.html');
   writeFile(
     'about/index.html',
-    renderBase({ title: 'About | Nova Blog', content })
+    renderBase({
+      title: `About | ${site.title}`,
+      description: `About ${site.title}.`,
+      canonicalPath: '/about/',
+      content,
+    })
   );
+};
+
+const generate404 = () => {
+  const content = readPage('404.html');
+  writeFile(
+    '404.html',
+    renderBase({
+      title: `Not Found | ${site.title}`,
+      description: 'Page not found.',
+      canonicalPath: '/404.html',
+      content,
+    })
+  );
+};
+
+const generateFeed = (posts) => {
+  writeFile('feed.xml', renderAtomFeed(posts, site));
+};
+
+const generateSitemapFile = (posts) => {
+  const entries = [
+    { url: '/' },
+    { url: '/about/' },
+    { url: '/posts/' },
+    ...posts.map((p) => ({ url: p.url, lastmod: p.updated || p.date })),
+  ];
+  writeFile('sitemap.xml', renderSitemap(entries, site));
 };
 
 const copyStatic = () => {
@@ -141,6 +230,9 @@ const main = () => {
   generatePostsIndex(posts);
   generateHomePage(posts);
   generateAboutPage();
+  generate404();
+  generateFeed(posts);
+  generateSitemapFile(posts);
   copyStatic();
 
   console.log(`Built ${posts.length} post(s) to ${DIST}`);
