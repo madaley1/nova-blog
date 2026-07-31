@@ -1,6 +1,6 @@
 {
   "name": "nova-blog",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "A static site blog platform which is both quick to spin up and contribute to.",
   "main": "generate.mjs",
   "type": "module",
