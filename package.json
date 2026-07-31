@@ -2,9 +2,9 @@
   "name": "nova-blog",
   "version": "0.0.1",
   "description": "A static site blog platform which is both quick to spin up and contribute to.",
-  "main": "index.mjs",
+  "main": "generate.mjs",
+  "type": "module",
   "scripts": {
-    "test": "test",
     "generate": "node generate.mjs"
   },
   "repository": {
@@ -20,12 +20,11 @@
     "url": "https://github.com/madaley1/nova-blog/issues"
   },
   "homepage": "https://github.com/madaley1/nova-blog#readme",
+  "engines": {
+    "node": ">=20.1"
+  },
   "dependencies": {
-    "fs": "^0.0.1-security",
-    "markdown-to-html": "^0.0.13",
-    "path": "^0.12.7",
     "sass": "^1.77.8",
-    "showdown": "^2.1.0",
-    "url": "^0.11.4"
+    "showdown": "^2.1.0"
   }
 }
