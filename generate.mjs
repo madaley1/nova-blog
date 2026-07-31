@@ -57,6 +57,10 @@ const normalizeDate = (value, fallback) => {
   return String(value).slice(0, 10);
 };
 
+const copyAssets = () => {
+  cpSync(join(__dirname, 'assets'), join(DIST, 'assets'), { recursive: true });
+};
+
 const collectPosts = () => {
   if (!existsSync(POSTS_DIR)) return [];
   const posts = [];
@@ -234,6 +238,7 @@ const main = () => {
   generateFeed(posts);
   generateSitemapFile(posts);
   copyStatic();
+  copyAssets();
 
   console.log(`Built ${posts.length} post(s) to ${DIST}`);
 };
