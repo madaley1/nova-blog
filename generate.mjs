@@ -49,7 +49,7 @@ const writeFile = (relPath, contents) => {
 // Obsidian-style image wikilinks: ![[path/img.png]] -> ![](path/img.png).
 // Applied to the markdown *before* conversion so we don't regex over HTML.
 const rewriteWikilinkImages = (md) =>
-  md.replace(/!\[\[([^\]]+)\]\]/g, (_m, uri) => `![](${uri.trim()})`);
+  md.replace(/!\[\[([^\]]+)\]\]/g, (_m, uri) => `![](${encodeURI(uri.trim())})`);
 
 const normalizeDate = (value, fallback) => {
   if (!value) return fallback;
@@ -68,7 +68,11 @@ const collectPosts = () => {
     if (!dateEntry.isDirectory()) continue;
     const dateDir = join(POSTS_DIR, dateEntry.name);
     for (const fileEntry of readdirSync(dateDir, { withFileTypes: true })) {
-      if (!fileEntry.isFile() || extname(fileEntry.name) !== '.md') continue;
+      if (!fileEntry.isFile()) continue;
+      if (extname(fileEntry.name) !== '.md') {
+        cpSync(join(dateDir, fileEntry.name), join(DIST, 'posts', dateEntry.name, fileEntry.name));
+        continue;
+      }
       const slug = basename(fileEntry.name, '.md');
       const mdPath = join(dateDir, fileEntry.name);
       const parsed = matter(readFileSync(mdPath, 'utf8'));
